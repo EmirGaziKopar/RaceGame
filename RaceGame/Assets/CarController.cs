@@ -14,7 +14,7 @@ public struct Wheel //Wheel adýnda bir yapý tanýmladýk
 {
     public GameObject model;
     public WheelCollider collider;
-    public Axel axel;
+    public Axel axel; //Enum
 }
 
 public class CarController : MonoBehaviour
@@ -32,6 +32,7 @@ public class CarController : MonoBehaviour
     private void Update()
     {
         directionOfMove();
+        turn();
     }
 
     private void LateUpdate()  
@@ -52,8 +53,22 @@ public class CarController : MonoBehaviour
         inputX = Input.GetAxis("Horizontal");
         inputY = Input.GetAxis("Vertical");
 
-
+        
     } 
+
+    void turn()
+    {
+        foreach (var wheel in wheels) //wheels referans deðerinin içersindekileri tek tek wheel içersine çekerek iþlem yaptýk yani tüm tekerlere
+        {
+            if(wheel.axel == Axel.Front) //Bu kullanýma dikkat sadece ön tekerlere iþlem yapmak için enum kullandýk
+            {
+                var _steerAngle = inputX * RotationSensitive * MaxAngleRotation; //input x basýlma süresine baðlý kalarak 0.0 ve 1.0 arasýnda deðerler üretir dolayýsýyla burada d'ye her basldýðýnda max 45 olacak bir açý deðeri çýkacak elimizi çektiðimiz taktirde ise tekrar 0 deðeri alacaðýz.
+                    
+                wheel.collider.steerAngle = Mathf.Lerp(wheel.collider.steerAngle, _steerAngle, .1f); //Lerp komutu sayesinde Belirtilen noktalar arasýndaki geçiþin yumuþak olmasýný saðlýyor
+
+            }
+        }
+    }
 
 }
 
