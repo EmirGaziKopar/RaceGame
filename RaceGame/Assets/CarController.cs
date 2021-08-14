@@ -19,7 +19,7 @@ public struct Wheel //Wheel adýnda bir yapý tanýmladýk
 
 public class CarController : MonoBehaviour
 {
-    [SerializeField] float MaximumAcceleration = 300f ;
+    [SerializeField] float MaximumAcceleration = 200f ;
 
     [SerializeField] float RotationSensitive;
 
@@ -29,21 +29,10 @@ public class CarController : MonoBehaviour
 
     [SerializeField] float inputX, inputY;
 
-    [SerializeField] int brakePower;
-
-    public Vector3 _centerOfMass;
-
-    private void Awake()
-    {
-        GetComponent<Rigidbody>().centerOfMass = _centerOfMass;
-    }
     private void Update()
     {
-        brake();
-        turnWheels();//tekerlerin dönmesini saðlar ama saða sola deðil karýþtýrma 
         directionOfMove();
         turn();
-        
     }
 
     private void LateUpdate()  
@@ -81,38 +70,6 @@ public class CarController : MonoBehaviour
         }
     }
 
-
-    void turnWheels()
-    {
-        foreach (var wheel in wheels) //wheels referans deðerinin içersindekileri tek tek wheel içersine çekerek iþlem yaptýk yani tüm tekerlere
-        {
-            Quaternion _rot;
-            Vector3 _pos;
-            wheel.collider.GetWorldPose(out _pos, out _rot); //colliderýn mevcut pozisyonunu ayarlamanýzý saðlayan bir kod        
-            wheel.model.transform.position = _pos;
-            wheel.model.transform.rotation = _rot;
-        }
-    }
-
-
-    void brake()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            foreach (var wheel in wheels)
-            {
-                wheel.collider.brakeTorque = brakePower; // brake power 
-            }
-        }
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            foreach (var wheel in wheels)
-            {
-                wheel.collider.brakeTorque = 0; // brake power 
-            }
-        }
-
-    }
 }
 
 
